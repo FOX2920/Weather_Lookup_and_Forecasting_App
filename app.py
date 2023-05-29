@@ -5,6 +5,15 @@ from weather_forecast import WeatherForecast
 import datetime
 
 def is_valid_date(date_str):
+    """
+    Kiểm tra xem một chuỗi ngày có đúng định dạng YYYY-MM-DD hay không.
+
+    Tham số:
+    - date_str (str): Chuỗi ngày cần kiểm tra.
+
+    Trả về:
+    - valid (bool): True nếu đúng định dạng, False nếu không.
+    """
     try:
         datetime.datetime.strptime(date_str, '%Y-%m-%d')
         return True
@@ -13,6 +22,12 @@ def is_valid_date(date_str):
 
 
 def enter_data():
+    """
+    Xử lý sự kiện nhấn nút "Enter" để tra cứu và hiển thị thông tin thời tiết.
+
+    Sử dụng các giá trị ngày và biến thời tiết được nhập từ giao diện người dùng.
+    Hiển thị thông báo lỗi nếu ngày hoặc biến thời tiết không hợp lệ.
+    """
     date = date_entry.get()
     selected_variables = []
 
@@ -41,6 +56,11 @@ def enter_data():
 
 
 def toggle_weather_info():
+    """
+    Xử lý sự kiện chọn hoặc bỏ chọn tùy chọn "Tra cứu thời tiết theo ngày".
+
+    Cho phép hoặc vô hiệu hóa việc nhập liệu các biến thời tiết từ giao diện người dùng.
+    """
     if weather_day_var.get():
         for widget in weather_info_frame.winfo_children():
             widget.config(state=tkinter.NORMAL)

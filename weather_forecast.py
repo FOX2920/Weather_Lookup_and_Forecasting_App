@@ -2,12 +2,30 @@ import pandas as pd
 from sklearn.linear_model import LinearRegression
 
 class WeatherForecast:
+    """Lớp WeatherForecast để tra cứu và dự báo thời tiết."""
+
     def __init__(self, data_file):
+        """
+                Khởi tạo đối tượng WeatherForecast.
+
+                Tham số:
+                - data_file (str): Đường dẫn đến tệp dữ liệu thời tiết.
+        """
         self.data_file = data_file
         self.data = pd.read_csv(self.data_file)
         self.preprocess_data()
 
+
     def preprocess_data(self):
+        """
+                Tiền xử lý dữ liệu thời tiết.
+
+                Loại bỏ các hàng chứa giá trị null,
+                chuyển đổi cột 'date' thành kiểu datetime,
+                đặt cột 'date' làm chỉ mục của DataFrame,
+                lựa chọn các cột dữ liệu cần sử dụng,
+                chọn dữ liệu từ năm 2000 đến 2021.
+        """
         # Xử lý dữ liệu
         # Loại bỏ các hàng chứa giá trị null
         self.data = self.data.dropna()
@@ -25,6 +43,15 @@ class WeatherForecast:
         self.data = self.data['2000':'2021']
 
     def build_linear_regression_model(self, target_variable):
+        """
+        Xây dựng mô hình hồi quy tuyến tính.
+
+        Tham số:
+        - target_variable (str): Tên của biến mục tiêu.
+
+        Trả về:
+        - model (LinearRegression): Mô hình hồi quy tuyến tính đã huấn luyện.
+        """
         if target_variable not in self.data.columns:
             raise Exception("Thuộc tính không tồn tại trong file CSV!")
 
@@ -41,6 +68,16 @@ class WeatherForecast:
         return model
 
     def get_weather_data(self, date, selected_variable):
+        """
+                        Lấy dữ liệu thời tiết cho một ngày cụ thể.
+
+                        Tham số:
+                        - date (datetime): Ngày cần lấy dữ liệu.
+                        - selected_variable (str): Tên của biến thời tiết cần lấy.
+
+                        Trả về:
+                        - weather_data (dict): Dữ liệu thời tiết cho ngày và biến thời tiết đã chọn.
+        """
         # Lấy dữ liệu thời tiết cho một ngày cụ thể
         try:
             weather_data = self.data.loc[date]
