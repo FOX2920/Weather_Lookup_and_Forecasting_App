@@ -1,5 +1,6 @@
 import pandas as pd
 from sklearn.linear_model import LinearRegression
+from datetime import timedelta
 
 class WeatherForecast:
     """Lớp WeatherForecast để tra cứu và dự báo thời tiết."""
@@ -55,9 +56,12 @@ class WeatherForecast:
         if target_variable not in self.data.columns:
             raise Exception("Thuộc tính không tồn tại trong file CSV!")
 
+        # Lựa chọn dữ liệu từ năm 2019 đến 2020
+        data_subset = self.data['2019':'2020']
+
         # Tách dữ liệu thành features (X) và target (y)
-        X = self.data.drop(target_variable, axis=1)
-        y = self.data[target_variable]
+        X = data_subset.drop(target_variable, axis=1)
+        y = data_subset[target_variable]
 
         # Xây dựng mô hình hồi quy tuyến tính
         model = LinearRegression()
@@ -99,3 +103,27 @@ class WeatherForecast:
             selected_variable: value
         }
 
+    def get_weather_data_details(self, n):
+        """
+        Lấy dữ liệu chi tiết (max_temp, min_temp, mean_temp) của thời tiết cho n ngày sau ngày hiện tại.
+
+        Tham số:
+        - n (int): Số ngày cần lấy dữ liệu (n > 0).
+
+        Trả về:
+        - weather_data_details (list): Danh sách chứa dữ liệu chi tiết của thời tiết cho từng ngày.
+        """
+        if n <= 0:
+            raise ValueError("Số ngày phải lớn hơn 0.")
+
+        current_date = pd.Timestamp.now().floor('D')  # Lấy ngày hiện tại (loại bỏ giờ, phút, giây)
+
+        weather_data_details = []
+        for i in range(1, n + 1):
+            date = current_date + timedelta(days=i)
+            weather_data = self.get_weather_data(date, 'max_temp')
+            weather_data['min_temp'] = self.get_weather_data(date, 'min_temp')['min_temp']
+            weather_data['mean_temp'] = self.get_weather_data(date, 'mean_temp')['mean_temp']
+            weather_data_details.append(weather_data)
+
+        return weather_data_details
